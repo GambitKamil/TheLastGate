@@ -11,9 +11,15 @@ public class CompanionAgent : Agent
     [SerializeField] private float moveSpeed = 4f;
     [SerializeField] private float maxEpisodeTime = 30f;
 
+    [Header("Reward Settings")]
+    [SerializeField] private float successReward = 2f;
+    [SerializeField] private float stepPenalty = -0.0002f;
+    [SerializeField] private float progressRewardScale = 0.05f;
+
     private Rigidbody2D rb;
     private Vector2 startPosition;
     private float episodeTimer;
+    private float previousDistance;
 
     public override void Initialize()
     {
@@ -28,15 +34,30 @@ public class CompanionAgent : Agent
 
         transform.position = startPosition;
         episodeTimer = 0f;
+
+        if (target != null)
+        {
+            previousDistance = Vector2.Distance(
+                transform.position,
+                target.position
+            );
+        }
     }
 
     public override void CollectObservations(VectorSensor sensor)
     {
-        // Hedefe göre agent konumu
-        Vector2 direction = target.position - transform.position;
-        sensor.AddObservation(direction / 12f);
+        if (target == null)
+        {
+            sensor.AddObservation(Vector2.zero);
+        }
+        else
+        {
+            Vector2 direction =
+                target.position - transform.position;
 
-        
+            sensor.AddObservation(direction / 12f);
+        }
+
         sensor.AddObservation(rb.linearVelocity / moveSpeed);
     }
 
@@ -45,11 +66,33 @@ public class CompanionAgent : Agent
         int horizontal = actions.DiscreteActions[0] - 1;
         int vertical = actions.DiscreteActions[1] - 1;
 
-        Vector2 movement = new Vector2(horizontal, vertical).normalized;
+        Vector2 movement = new Vector2(
+            horizontal,
+            vertical
+        ).normalized;
+
         rb.linearVelocity = movement * moveSpeed;
 
-        // Küçük bir ceza, hedefe hızlı bir şekilde ulaşılmasını teşvik eder
-        AddReward(-0.001f);
+        // Small penalty for spending time
+        AddReward(stepPenalty);
+
+        // Reward progress toward the target
+        if (target != null)
+        {
+            float currentDistance = Vector2.Distance(
+                transform.position,
+                target.position
+            );
+
+            float distanceImprovement =
+                previousDistance - currentDistance;
+
+            AddReward(
+                distanceImprovement * progressRewardScale
+            );
+
+            previousDistance = currentDistance;
+        }
 
         episodeTimer += Time.fixedDeltaTime;
 
@@ -63,7 +106,7 @@ public class CompanionAgent : Agent
     {
         if (other.CompareTag("Finish"))
         {
-            AddReward(1f);
+            AddReward(successReward);
             EndEpisode();
         }
     }
@@ -75,9 +118,16 @@ public class CompanionAgent : Agent
         discreteActions[0] = 1;
         discreteActions[1] = 1;
 
-        if (Input.GetKey(KeyCode.A)) discreteActions[0] = 0;
-        if (Input.GetKey(KeyCode.D)) discreteActions[0] = 2;
-        if (Input.GetKey(KeyCode.S)) discreteActions[1] = 0;
-        if (Input.GetKey(KeyCode.W)) discreteActions[1] = 2;
+        if (Input.GetKey(KeyCode.A))
+            discreteActions[0] = 0;
+
+        if (Input.GetKey(KeyCode.D))
+            discreteActions[0] = 2;
+
+        if (Input.GetKey(KeyCode.S))
+            discreteActions[1] = 0;
+
+        if (Input.GetKey(KeyCode.W))
+            discreteActions[1] = 2;
     }
 }
