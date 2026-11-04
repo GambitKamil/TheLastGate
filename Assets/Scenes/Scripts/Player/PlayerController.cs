@@ -4,7 +4,7 @@ public class PlayerController : MonoBehaviour
 {
     [Header("Movement Settings")]
     [SerializeField] private float moveSpeed = 5f;
-
+    [SerializeField] private DialogueUI dialogueUI;
     private Rigidbody2D rb;
     private Vector2 moveInput;
     private IInteractable currentInteractable;
@@ -26,6 +26,11 @@ public class PlayerController : MonoBehaviour
         {
             currentInteractable = null;
             Debug.Log("Exited interaction zone.");
+            // Automatically close dialogue when walking away!
+            if (dialogueUI != null)
+            {
+                dialogueUI.HideDialogue();
+            }
         }
     }
     private void Awake()
