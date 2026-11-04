@@ -41,6 +41,14 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
+
+        // If dialogue is open, freeze player completely!
+        if (dialogueUI != null && dialogueUI.IsDialogueOpen)
+        {
+            moveInput = Vector2.zero; // Stops physics movement
+            return;                   // Skips reading WASD and E
+        }
+
         // 2. Read Keyboard Inputs (-1, 0, or 1)
         float moveX = Input.GetAxisRaw("Horizontal"); // A/D or Left/Right
         float moveY = Input.GetAxisRaw("Vertical");   // W/S or Up/Down
