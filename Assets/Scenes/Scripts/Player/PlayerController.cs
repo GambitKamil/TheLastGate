@@ -5,6 +5,9 @@ public class PlayerController : MonoBehaviour
     [Header("Movement Settings")]
     [SerializeField] private float moveSpeed = 5f;
     [SerializeField] private DialogueUI dialogueUI;
+
+    public static bool CanMove { get; set; } = true;
+
     private Rigidbody2D rb;
     private Vector2 moveInput;
     private IInteractable currentInteractable;
@@ -42,13 +45,12 @@ public class PlayerController : MonoBehaviour
     private void Update()
     {
 
-        // If dialogue is open, freeze player completely!
-        if (dialogueUI != null && dialogueUI.IsDialogueOpen)
+        // If CanMove is false or dialogue is open, freeze player completely!
+        if (!CanMove || (dialogueUI != null && dialogueUI.IsDialogueOpen))
         {
             moveInput = Vector2.zero; // Stops physics movement
             return;                   // Skips reading WASD and E
         }
-
         // 2. Read Keyboard Inputs (-1, 0, or 1)
         float moveX = Input.GetAxisRaw("Horizontal"); // A/D or Left/Right
         float moveY = Input.GetAxisRaw("Vertical");   // W/S or Up/Down
