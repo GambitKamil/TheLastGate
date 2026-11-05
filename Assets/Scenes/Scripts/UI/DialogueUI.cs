@@ -12,19 +12,36 @@ public class DialogueUI : MonoBehaviour
     [SerializeField] private TMP_InputField playerInputField;
     [SerializeField] private Button sendButton;
 
+    [Header("Error Popup")]
+    [SerializeField] private GameObject errorPanel;
+    [SerializeField] private TextMeshProUGUI errorMessageText;
+    [SerializeField] private Button errorDismissButton;
+
+
     [Header("Services")]
     [SerializeField] private OllamaService llmService;
+
+    [Header("Environment")]
+    [SerializeField] private GateController gateController;
+    private bool isGateUnlocked = false;
 
     public bool IsDialogueOpen => dialoguePanel != null && dialoguePanel.activeSelf;
 
     private void Start()
     {
         HideDialogue();
+        HideError();
 
-        // 1. Tell Unity: When sendButton is clicked, run OnSendClicked()!
+        // Wire up the Send button
         if (sendButton != null)
         {
             sendButton.onClick.AddListener(OnSendClicked);
+        }
+
+        // Wire up the Error Dismiss button
+        if (errorDismissButton != null)
+        {
+            errorDismissButton.onClick.AddListener(HideError);
         }
     }
 
@@ -32,29 +49,56 @@ public class DialogueUI : MonoBehaviour
     {
         if (IsDialogueOpen)
         {
-            if (Input.GetKeyDown(KeyCode.Escape))
+            // If the gate is already unlocked, ANY key closes dialogue so player can walk!
+            if (isGateUnlocked && Input.anyKeyDown)
             {
                 HideDialogue();
+                return;
             }
 
-            // Also allow pressing Enter on the keyboard to send
-            if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter))
+            // Escape closes dialogue (unless error popup is showing)
+            if (Input.GetKeyDown(KeyCode.Escape))
             {
-                OnSendClicked();
+                if (errorPanel != null && errorPanel.activeSelf)
+                {
+                    HideError();
+                }
+                else
+                {
+                    HideDialogue();
+                }
+            }
+
+            // Enter key sends the message (only if gate is not yet unlocked)
+            if (!isGateUnlocked && (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter)))
+            {
+                if (errorPanel == null || !errorPanel.activeSelf)
+                {
+                    OnSendClicked();
+                }
             }
         }
     }
 
     public void ShowDialogue()
     {
+        if (isGateUnlocked)
+        {
+            // If gate is already open, just show a friendly reminder!
+            dialoguePanel.SetActive(true);
+            dialogueContentText.text = "The Gatekeeper smiles: <i>\"The gate is already open, traveler. Go forth!\"</i>\n\n<color=#A0AEC0><i>[Press any key to proceed]</i></color>";
+            playerInputField.gameObject.SetActive(false);
+            sendButton.gameObject.SetActive(false);
+            return;
+        }
+
         if (dialoguePanel != null)
         {
             dialoguePanel.SetActive(true);
             playerInputField.text = "";
-            playerInputField.ActivateInputField(); // Focuses keyboard cursor inside the text box
+            playerInputField.ActivateInputField();
         }
     }
-
     public void HideDialogue()
     {
         if (dialoguePanel != null)
@@ -63,41 +107,80 @@ public class DialogueUI : MonoBehaviour
         }
     }
 
+    public void ShowError(string friendlyMessage)
+    {
+        if (errorMessageText != null)
+        {
+            errorMessageText.text = friendlyMessage;
+        }
+
+        if (errorPanel != null)
+        {
+            errorPanel.SetActive(true);
+        }
+
+        // Restore send button so player can try again
+        sendButton.interactable = true;
+    }
+
+    public void HideError()
+    {
+        if (errorPanel != null)
+        {
+            errorPanel.SetActive(false);
+        }
+
+        // Re-focus the input box so the player can keep typing
+        playerInputField.ActivateInputField();
+    }
+
     private void OnSendClicked()
     {
         string message = playerInputField.text.Trim();
-
-        // Don't send empty messages
         if (string.IsNullOrEmpty(message)) return;
 
         Debug.Log($"[DialogueUI] Sending message: {message}");
 
-        // 2. Clear input and show the "Thinking..." state
         playerInputField.text = "";
         dialogueContentText.text = "<i>The Gatekeeper is pondering your words...</i>";
-
-        // Disable button while waiting so player doesn't spam requests
         sendButton.interactable = false;
 
-        // 3. Launch the asynchronous request!
         StartCoroutine(llmService.SendMessage(
             message,
             onSuccess: (response) =>
             {
-                // This code runs when the 1.5s is up and response arrives:
-                dialogueContentText.text = response.reply;
                 Debug.Log($"[DialogueUI] Gatekeeper responded: {response.reply} (Decision: {response.decision})");
-
-                sendButton.interactable = true;
-                playerInputField.ActivateInputField();
+                if (response.decision == "OPEN_GATE")
+                {
+                    isGateUnlocked = true;
+                    // Display the Gatekeeper's parting words + instruction
+                    dialogueContentText.text = $"{response.reply}\n\n<color=#A0AEC0><i>[Press any key to proceed]</i></color>";
+                    // Lock the inputs so the AI cannot re-lock the gate!
+                    playerInputField.interactable = false;
+                    sendButton.interactable = false;
+                    // Open the physical gate
+                    if (gateController != null)
+                    {
+                        gateController.OpenGate();
+                    }
+                }
+                else
+                {
+                    // Normal conversation continues
+                    dialogueContentText.text = response.reply;
+                    sendButton.interactable = true;
+                    playerInputField.ActivateInputField();
+                }
             },
             onError: (error) =>
             {
-                // This code runs if there was an error:
-                dialogueContentText.text = $"<color=red>Error: {error}</color>";
                 Debug.LogError($"[DialogueUI] {error}");
 
-                sendButton.interactable = true;
+                // Reset dialogue text back to normal
+                dialogueContentText.text = "The Gatekeeper stares at you in silence.";
+
+                // Pop up our clean error dialog!
+                ShowError("Unable to reach the Gatekeeper. Please ensure the local Ollama server is running and try again.");
             }
         ));
     }
