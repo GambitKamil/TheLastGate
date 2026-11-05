@@ -6,6 +6,10 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float moveSpeed = 5f;
     [SerializeField] private DialogueUI dialogueUI;
 
+    [Header("Visuals & Animation")]
+    [SerializeField] private Animator animator;
+    [SerializeField] private SpriteRenderer spriteRenderer;
+
     public static bool CanMove { get; set; } = true;
 
     private Rigidbody2D rb;
@@ -54,6 +58,23 @@ public class PlayerController : MonoBehaviour
         // 2. Read Keyboard Inputs (-1, 0, or 1)
         float moveX = Input.GetAxisRaw("Horizontal"); // A/D or Left/Right
         float moveY = Input.GetAxisRaw("Vertical");   // W/S or Up/Down
+
+        // Update animation state (true if player is moving in any direction)
+        bool isMoving = moveInput.sqrMagnitude > 0.01f;
+        if (animator != null)
+        {
+            animator.SetBool("IsMoving", isMoving);
+        }
+
+        // Flip sprite horizontally when moving left or right
+        if (moveX > 0.01f && spriteRenderer != null)
+        {
+            spriteRenderer.flipX = false; // Facing Right
+        }
+        else if (moveX < -0.01f && spriteRenderer != null)
+        {
+            spriteRenderer.flipX = true;  // Facing Left
+        }
 
         // 3. Normalize so diagonal walking isn't 41% faster!
         moveInput = new Vector2(moveX, moveY).normalized;
