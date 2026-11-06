@@ -85,25 +85,14 @@ public class CompanionAgent : Agent
         }
     }
 
-    public override void CollectObservations(
-        VectorSensor sensor)
+    public override void CollectObservations(VectorSensor sensor)
     {
-        if (target == null)
-        {
-            sensor.AddObservation(Vector2.zero);
-        }
-        else
-        {
-            Vector2 direction =
-                (Vector2)target.position - rb.position;
+        Vector2 direction = target != null
+            ? (Vector2)target.position - rb.position
+            : Vector2.zero;
 
-            sensor.AddObservation(direction / 12f);
-            sensor.AddObservation(direction.magnitude / 12f);
-        }
-
-        sensor.AddObservation(
-            rb.linearVelocity / moveSpeed
-        );
+        sensor.AddObservation(direction / 12f);
+        sensor.AddObservation(rb.linearVelocity / moveSpeed);
     }
 
     public override void OnActionReceived(
