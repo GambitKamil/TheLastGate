@@ -6,14 +6,14 @@ public class BridgeController : MonoBehaviour
     [Header("Bridge Settings")]
     [SerializeField] private GameObject bridgeVisual;
 
-    private bool isActivated = false;
+    [Tooltip("Separate collider that blocks the crossing until activation.")]
+    [SerializeField] private Collider2D bridgeBlocker;
+
+    private bool isActivated;
 
     private void Start()
     {
-        if (bridgeVisual != null)
-        {
-            bridgeVisual.SetActive(false);
-        }
+        ApplyState();
     }
 
     public void ActivateBridge()
@@ -22,25 +22,32 @@ public class BridgeController : MonoBehaviour
             return;
 
         isActivated = true;
-
-        if (bridgeVisual != null)
-        {
-            bridgeVisual.SetActive(true);
-        }
+        ApplyState();
 
         Debug.Log("Bridge activated!");
     }
+
     public void ResetBridge()
     {
         isActivated = false;
-
-        if (bridgeVisual != null)
-        {
-            bridgeVisual.SetActive(false);
-        }
+        ApplyState();
 
         Debug.Log("Bridge reset!");
     }
+
+    private void ApplyState()
+    {
+        if (bridgeVisual != null)
+        {
+            bridgeVisual.SetActive(isActivated);
+        }
+
+        if (bridgeBlocker != null)
+        {
+            bridgeBlocker.enabled = !isActivated;
+        }
+    }
+
     public bool IsActivated()
     {
         return isActivated;

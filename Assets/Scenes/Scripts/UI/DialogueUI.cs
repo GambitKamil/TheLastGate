@@ -142,7 +142,7 @@ public class DialogueUI : MonoBehaviour
         Debug.Log($"[DialogueUI] Sending message: {message}");
 
         playerInputField.text = "";
-        dialogueContentText.text = "<i>The Gatekeeper is pondering your words...</i>";
+        dialogueContentText.text = "<i>Kapı muhafızı düşünüyor...</i>";
         sendButton.interactable = false;
 
         StartCoroutine(llmService.SendMessage(
@@ -180,7 +180,7 @@ public class DialogueUI : MonoBehaviour
                 dialogueContentText.text = "The Gatekeeper stares at you in silence.";
 
                 // Pop up our clean error dialog!
-                ShowError("Unable to reach the Gatekeeper. Please ensure the local Ollama server is running and try again.");
+                ShowError("Muhafıza ulaşılamadı. Yerel Ollama sunucusunun çalıştığını kontrol edip tekrar deneyin.");
             }
         ));
     }
