@@ -21,6 +21,10 @@ public class SwitchController : MonoBehaviour
 
         ActivateSwitch();
     }
+    public void ResetSwitch()
+    {
+        isActivated = false;
+    }
 
     private void ActivateSwitch()
     {

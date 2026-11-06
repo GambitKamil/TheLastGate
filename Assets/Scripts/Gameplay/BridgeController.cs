@@ -30,7 +30,17 @@ public class BridgeController : MonoBehaviour
 
         Debug.Log("Bridge activated!");
     }
+    public void ResetBridge()
+    {
+        isActivated = false;
 
+        if (bridgeVisual != null)
+        {
+            bridgeVisual.SetActive(false);
+        }
+
+        Debug.Log("Bridge reset!");
+    }
     public bool IsActivated()
     {
         return isActivated;
