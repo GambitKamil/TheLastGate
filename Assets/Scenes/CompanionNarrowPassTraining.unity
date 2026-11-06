@@ -981,10 +981,10 @@ PrefabInstance:
     - target: {fileID: 2439615691213746904, guid: 544d7095c8f57e74d9af172c85ffde0c, type: 3}
       propertyPath: m_Model
       value: 
-      objectReference: {fileID: 5022602860645237092, guid: fecd608dbe2681a4eb82e8ff7189aa6a, type: 3}
+      objectReference: {fileID: 0}
     - target: {fileID: 2439615691213746904, guid: 544d7095c8f57e74d9af172c85ffde0c, type: 3}
       propertyPath: m_BehaviorType
-      value: 2
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2439615691213746904, guid: 544d7095c8f57e74d9af172c85ffde0c, type: 3}
       propertyPath: m_DeterministicInference
@@ -1051,8 +1051,12 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1623256650}
     - target: {fileID: 6293302434042867832, guid: 544d7095c8f57e74d9af172c85ffde0c, type: 3}
+      propertyPath: startOffsetX
+      value: 1.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 6293302434042867832, guid: 544d7095c8f57e74d9af172c85ffde0c, type: 3}
       propertyPath: trainingMode
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6293302434042867832, guid: 544d7095c8f57e74d9af172c85ffde0c, type: 3}
       propertyPath: trainingBridge
@@ -3450,7 +3454,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6400378925045970319, guid: ccc7bdac4aceb7b46804966f6447671c, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 4.1
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 6400378925045970319, guid: ccc7bdac4aceb7b46804966f6447671c, type: 3}
       propertyPath: m_LocalPosition.z

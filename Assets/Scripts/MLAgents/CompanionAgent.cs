@@ -23,6 +23,9 @@ public class CompanionAgent : Agent
     [Header("Training Environment")]
     [SerializeField] private BridgeController trainingBridge;
     [SerializeField] private SwitchController trainingSwitch;
+    [Header("Training Start")]
+    [SerializeField] private bool randomizeTrainingStart = true;
+    [SerializeField, Min(0f)] private float startOffsetX = 0.25f;
 
     private Rigidbody2D rb;
     private Vector2 startPosition;
@@ -53,7 +56,14 @@ public class CompanionAgent : Agent
 
         rb.linearVelocity = Vector2.zero;
         rb.angularVelocity = 0f;
-        rb.position = startPosition;
+        Vector2 episodeStart = startPosition;
+
+        if (trainingMode && randomizeTrainingStart)
+        {
+            episodeStart.x += Random.Range(-startOffsetX, startOffsetX);
+        }
+
+        rb.position = episodeStart;
 
         navigationActive =
             trainingMode || startAutomatically;
