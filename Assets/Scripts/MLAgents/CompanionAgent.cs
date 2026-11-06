@@ -23,12 +23,26 @@ public class CompanionAgent : Agent
     [Header("Training Environment")]
     [SerializeField] private BridgeController trainingBridge;
     [SerializeField] private SwitchController trainingSwitch;
+
     [Header("Training Start")]
     [SerializeField] private bool randomizeTrainingStart = true;
     [SerializeField, Min(0f)] private float startOffsetX = 0.25f;
 
+    [Header("Training Target")]
+    [SerializeField] private bool randomizeTrainingTarget = true;
+    [Header("Target Placement")]
+    [SerializeField] private LayerMask targetObstacleMask;
+    [SerializeField]
+    private Vector2 targetAreaMin =
+        new Vector2(-2.0f, 3.8f);
+    [SerializeField]
+    private Vector2 targetAreaMax =
+        new Vector2(8.6f, 5.0f);
+    [SerializeField, Min(0f)] private float targetClearance = 0.3f;
+
     private Rigidbody2D rb;
     private Vector2 startPosition;
+    private Vector3 targetStartPosition;
     private float episodeTimer;
     private float previousDistance;
 
@@ -41,11 +55,14 @@ public class CompanionAgent : Agent
     public override void Initialize()
     {
         rb = GetComponent<Rigidbody2D>();
-
         startPosition = rb.position;
 
-        navigationActive =
-            trainingMode || startAutomatically;
+        if (target != null)
+        {
+            targetStartPosition = target.position;
+        }
+
+        navigationActive = trainingMode || startAutomatically;
     }
 
     public override void OnEpisodeBegin()
@@ -56,30 +73,87 @@ public class CompanionAgent : Agent
 
         rb.linearVelocity = Vector2.zero;
         rb.angularVelocity = 0f;
+
         Vector2 episodeStart = startPosition;
 
         if (trainingMode && randomizeTrainingStart)
         {
-            episodeStart.x += Random.Range(-startOffsetX, startOffsetX);
+            episodeStart.x += Random.Range(
+                -startOffsetX, startOffsetX
+            );
         }
 
         rb.position = episodeStart;
-
-        navigationActive =
-            trainingMode || startAutomatically;
-
-        if (target != null)
-        {
-            previousDistance = Vector2.Distance(
-                rb.position,
-                target.position
-            );
-        }
+        navigationActive = trainingMode || startAutomatically;
 
         if (trainingMode)
         {
             ResetTrainingEnvironment();
+
+            if (target != null && randomizeTrainingTarget)
+            {
+                RandomizeTargetPosition();
+            }
+
+            Physics2D.SyncTransforms();
         }
+
+        previousDistance = target != null
+            ? Vector2.Distance(rb.position, target.position)
+            : 0f;
+    }
+    private void RandomizeTargetPosition()
+    {
+        Collider2D targetCollider =
+            target.GetComponent<Collider2D>();
+
+        if (targetCollider == null || targetObstacleMask.value == 0)
+        {
+            Debug.LogError(
+                "Assign the target Collider2D and Target Obstacle Mask."
+            );
+            return;
+        }
+
+        Physics2D.SyncTransforms();
+
+        Vector2 boundsOffset =
+            (Vector2)targetCollider.bounds.center -
+            (Vector2)target.position;
+
+        Vector2 checkSize =
+            (Vector2)targetCollider.bounds.size +
+            Vector2.one * (targetClearance * 2f);
+
+        for (int attempt = 0; attempt < 100; attempt++)
+        {
+            Vector2 candidate = new Vector2(
+                Random.Range(targetAreaMin.x, targetAreaMax.x),
+                Random.Range(targetAreaMin.y, targetAreaMax.y)
+            );
+
+            Collider2D obstacle = Physics2D.OverlapBox(
+                candidate + boundsOffset,
+                checkSize,
+                0f,
+                targetObstacleMask
+            );
+
+            if (obstacle != null)
+                continue;
+
+            target.position = new Vector3(
+                candidate.x,
+                candidate.y,
+                targetStartPosition.z
+            );
+
+            return;
+        }
+
+        Debug.LogWarning(
+            "No free target position found. Previous position retained."
+        );
     }
 
     private void ResetTrainingEnvironment()
@@ -105,8 +179,7 @@ public class CompanionAgent : Agent
         sensor.AddObservation(rb.linearVelocity / moveSpeed);
     }
 
-    public override void OnActionReceived(
-        ActionBuffers actions)
+    public override void OnActionReceived(ActionBuffers actions)
     {
         if (episodeEnding)
         {
@@ -115,47 +188,36 @@ public class CompanionAgent : Agent
         }
 
         if (!trainingMode &&
-            (!navigationActive ||
-             targetReached ||
-             target == null))
+            (!navigationActive || targetReached || target == null))
         {
             rb.linearVelocity = Vector2.zero;
             return;
         }
 
-        int horizontal =
-            actions.DiscreteActions[0] - 1;
-
-        int vertical =
-            actions.DiscreteActions[1] - 1;
+        int horizontal = actions.DiscreteActions[0] - 1;
+        int vertical = actions.DiscreteActions[1] - 1;
 
         Vector2 movement = new Vector2(
-            horizontal,
-            vertical
+            horizontal, vertical
         ).normalized;
 
         rb.linearVelocity = movement * moveSpeed;
 
         if (!trainingMode)
+        {
             return;
+        }
 
         AddReward(stepPenalty);
 
         if (target != null)
         {
-            float currentDistance =
-                Vector2.Distance(
-                    rb.position,
-                    target.position
-                );
-
-            float improvement =
-                previousDistance - currentDistance;
-
-            AddReward(
-                improvement * progressRewardScale
+            float currentDistance = Vector2.Distance(
+                rb.position, target.position
             );
 
+            float improvement = previousDistance - currentDistance;
+            AddReward(improvement * progressRewardScale);
             previousDistance = currentDistance;
         }
 
@@ -170,7 +232,9 @@ public class CompanionAgent : Agent
     private void FinishTrainingEpisode(bool success)
     {
         if (!trainingMode || episodeEnding)
+        {
             return;
+        }
 
         episodeEnding = true;
 
@@ -180,26 +244,25 @@ public class CompanionAgent : Agent
         }
 
         rb.linearVelocity = Vector2.zero;
-
-        // Сначала завершаем эпизод.
-        // ML-Agents может вызвать OnEpisodeBegin
-        // при следующем запросе решения.
         EndEpisode();
-
-        // Не сбрасываем мост здесь:
-        // это выполняется в OnEpisodeBegin.
     }
 
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (!other.CompareTag("Finish"))
+        {
             return;
+        }
 
         if (targetReached || episodeEnding)
+        {
             return;
+        }
 
         if (!trainingMode && !navigationActive)
+        {
             return;
+        }
 
         targetReached = true;
 
@@ -211,10 +274,7 @@ public class CompanionAgent : Agent
         {
             navigationActive = false;
             rb.linearVelocity = Vector2.zero;
-
-            Debug.Log(
-                "Companion reached switch in game mode!"
-            );
+            Debug.Log("Companion reached switch in game mode!");
         }
     }
 
@@ -222,32 +282,26 @@ public class CompanionAgent : Agent
     {
         if (trainingMode)
         {
-            Debug.LogWarning(
-                "StartNavigation is only for game mode."
-            );
+            Debug.LogWarning("StartNavigation is only for game mode.");
             return;
         }
 
         if (targetReached || navigationActive)
+        {
             return;
+        }
 
         if (target == null)
         {
-            Debug.LogWarning(
-                "Companion target is not assigned!"
-            );
+            Debug.LogWarning("Companion target is not assigned!");
             return;
         }
 
         navigationActive = true;
-
-        Debug.Log(
-            "Companion navigation started!"
-        );
+        Debug.Log("Companion navigation started!");
     }
 
-    public override void Heuristic(
-        in ActionBuffers actionsOut)
+    public override void Heuristic(in ActionBuffers actionsOut)
     {
         var actions = actionsOut.DiscreteActions;
 
