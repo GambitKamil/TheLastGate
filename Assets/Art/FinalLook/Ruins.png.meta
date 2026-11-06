@@ -1,0 +1,362 @@
+TextureImporter:
+  alignment: 0
+  alphaIsTransparency: 1
+  alphaUsage: 1
+  applyGammaDecoding: 0
+  assetBundleName: null
+  assetBundleVariant: null
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    flipGreenChannel: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+  compressionQuality: 50
+  compressionQualitySet: 0
+  cookieLightType: 0
+  cubemapConvolution: 0
+  externalObjects: {}
+  flipbookColumns: 1
+  flipbookRows: 1
+  generateCubemap: 6
+  grayScaleToAlpha: 0
+  ignoreMipmapLimit: 0
+  ignorePngGamma: 0
+  internalIDToNameTable:
+  - first:
+      213: 21300000
+    second: stone
+  - first:
+      213: 21300002
+    second: coping
+  - first:
+      213: 21300004
+    second: wood
+  - first:
+      213: 21300006
+    second: gate
+  - first:
+      213: 21300008
+    second: arch
+  - first:
+      213: 21300010
+    second: rune
+  - first:
+      213: 21300012
+    second: ironBars
+  isReadable: 0
+  lightmap: 0
+  maxTextureSize: 2048
+  maxTextureSizeSet: 0
+  mipmapLimitGroupName: null
+  mipmaps:
+    alphaTestReferenceValue: 0.5
+    borderMipMap: 0
+    enableMipMap: 0
+    fadeOut: 0
+    linearTexture: 0
+    mipMapFadeDistanceEnd: 3
+    mipMapFadeDistanceStart: 1
+    mipMapMode: 0
+    mipMapsPreserveCoverage: 0
+    sRGBTexture: 1
+  nPOTScale: 0
+  pSDRemoveMatte: 0
+  platformSettings:
+  - allowsAlphaSplitting: 0
+    androidETC2FallbackOverride: 0
+    buildTarget: DefaultTexturePlatform
+    compressionQuality: 50
+    crunchedCompression: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+    ignorePlatformSupport: 0
+    maxTextureSize: 2048
+    overridden: 0
+    resizeAlgorithm: 0
+    serializedVersion: 4
+    textureCompression: 0
+    textureFormat: -1
+  - allowsAlphaSplitting: 0
+    androidETC2FallbackOverride: 0
+    buildTarget: Standalone
+    compressionQuality: 50
+    crunchedCompression: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+    ignorePlatformSupport: 0
+    maxTextureSize: 2048
+    overridden: 0
+    resizeAlgorithm: 0
+    serializedVersion: 4
+    textureCompression: 0
+    textureFormat: -1
+  - allowsAlphaSplitting: 0
+    androidETC2FallbackOverride: 0
+    buildTarget: WebGL
+    compressionQuality: 50
+    crunchedCompression: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+    ignorePlatformSupport: 0
+    maxTextureSize: 2048
+    overridden: 0
+    resizeAlgorithm: 0
+    serializedVersion: 4
+    textureCompression: 0
+    textureFormat: -1
+  seamlessCubemap: 0
+  serializedVersion: 13
+  singleChannelComponent: 0
+  spriteBorder:
+    w: 0
+    x: 0
+    y: 0
+    z: 0
+  spriteExtrude: 1
+  spriteGenerateFallbackPhysicsShape: 1
+  spriteMeshType: 0
+  spriteMode: 2
+  spritePivot:
+    x: 0.5
+    y: 0.5
+  spritePixelsToUnits: 16
+  spriteSheet:
+    bones: []
+    customData: null
+    edges: []
+    indices: null
+    internalID: 0
+    nameFileIdTable:
+      stone: 21300000
+      coping: 21300002
+      wood: 21300004
+      gate: 21300006
+      arch: 21300008
+      rune: 21300010
+      ironBars: 21300012
+    outline: []
+    physicsShape: []
+    secondaryTextures: []
+    serializedVersion: 2
+    spriteCustomMetadata:
+      entries: []
+    spriteID: null
+    sprites:
+    - serializedVersion: 2
+      name: stone
+      rect:
+        serializedVersion: 2
+        x: 16
+        y: 368
+        width: 16
+        height: 16
+      alignment: 0
+      pivot:
+        x: 0.5
+        y: 0.5
+      border:
+        x: 0
+        y: 0
+        z: 0
+        w: 0
+      customData: ''
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1900d0f2bf095fde890605220a0bf597
+      internalID: 21300000
+      vertices: []
+      indices: ''
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: coping
+      rect:
+        serializedVersion: 2
+        x: 16
+        y: 384
+        width: 16
+        height: 16
+      alignment: 0
+      pivot:
+        x: 0.5
+        y: 0.5
+      border:
+        x: 0
+        y: 0
+        z: 0
+        w: 0
+      customData: ''
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f0a91b971e1c559887ee66b7727d0582
+      internalID: 21300002
+      vertices: []
+      indices: ''
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: wood
+      rect:
+        serializedVersion: 2
+        x: 240
+        y: 368
+        width: 16
+        height: 16
+      alignment: 0
+      pivot:
+        x: 0.5
+        y: 0.5
+      border:
+        x: 0
+        y: 0
+        z: 0
+        w: 0
+      customData: ''
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 70a217b913225c6f90b8916e2f39098e
+      internalID: 21300004
+      vertices: []
+      indices: ''
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: gate
+      rect:
+        serializedVersion: 2
+        x: 32
+        y: 240
+        width: 32
+        height: 48
+      alignment: 0
+      pivot:
+        x: 0.5
+        y: 0.5
+      border:
+        x: 0
+        y: 0
+        z: 0
+        w: 0
+      customData: ''
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 78f427e46aed58099ade2ebeb4659973
+      internalID: 21300006
+      vertices: []
+      indices: ''
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: arch
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 240
+        width: 32
+        height: 48
+      alignment: 0
+      pivot:
+        x: 0.5
+        y: 0.5
+      border:
+        x: 0
+        y: 0
+        z: 0
+        w: 0
+      customData: ''
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 04fe234c8b405c0d8ae0ccf60366527c
+      internalID: 21300008
+      vertices: []
+      indices: ''
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: rune
+      rect:
+        serializedVersion: 2
+        x: 80
+        y: 224
+        width: 16
+        height: 16
+      alignment: 0
+      pivot:
+        x: 0.5
+        y: 0.5
+      border:
+        x: 0
+        y: 0
+        z: 0
+        w: 0
+      customData: ''
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 11211fc71c845567a0bae28a25266bf5
+      internalID: 21300010
+      vertices: []
+      indices: ''
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ironBars
+      rect:
+        serializedVersion: 2
+        x: 40
+        y: 256
+        width: 16
+        height: 16
+      alignment: 0
+      pivot:
+        x: 0.5
+        y: 0.5
+      border:
+        x: 0
+        y: 0
+        z: 0
+        w: 0
+      customData: ''
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1104b656514f554aada8f63cf5811689
+      internalID: 21300012
+      vertices: []
+      indices: ''
+      edges: []
+      weights: []
+    vertices: []
+    weights: []
+  spriteTessellationDetail: -1
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  swizzle: 50462976
+  textureFormat: 1
+  textureFormatSet: 0
+  textureSettings:
+    aniso: 1
+    filterMode: 0
+    mipBias: 0
+    serializedVersion: 2
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  textureShape: 1
+  textureType: 8
+  userData: null
+  vTOnly: 0
+  filterMode: 0
+  textureCompression: 0
+fileFormatVersion: 2
+guid: 6dbabe98845857b7a76eaad785bf5b6b
