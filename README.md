@@ -206,4 +206,9 @@ Sonraki geliştirmeler daha farklı haritalarla eğitim, otomatik süre ve başa
 Unity ML-Agents: https://unity.com/products/machine-learning-agents
 Ollama: https://ollama.com/
 Mermaid: https://mermaid.js.org/
+Grafikler: Pixel Crawler, Anokolisa. Lisans metni Assets/Art/Pixel Crawler - Free Pack/Terms.txt dosyasındadır.kullanılmasıdır.
+11. Kaynaklar
+Unity ML-Agents: https://unity.com/products/machine-learning-agents
+Ollama: https://ollama.com/
+Mermaid: https://mermaid.js.org/
 Grafikler: Pixel Crawler, Anokolisa. Lisans metni Assets/Art/Pixel Crawler - Free Pack/Terms.txt dosyasındadır.
