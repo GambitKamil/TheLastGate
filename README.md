@@ -105,7 +105,7 @@ flowchart TD
     G --> H{Hedefe temas var mı?}
     H -->|Evet, eğitim| I[Başarı ödülü ve EndEpisode]
     I --> A
-    H -->|Evet, oyun| J[Dur; şalter çıkışı açar]
+    H -->|Evet, oyun| J[Dur, şalter çıkışı açar]
     H -->|Hayır| K{Eğitim süresi doldu mu?}
     K -->|Evet| A
     K -->|Hayır| E
@@ -204,7 +204,7 @@ sequenceDiagram
     UI->>UI: Bekleme metnini göster
     UI->>Servis: SendMessage
     Servis->>LLM: POST /api/chat ve JSON şeması
-    Note over UI,LLM: Coroutine bekler; ana oyun döngüsü devam eder
+    Note over UI,LLM: Coroutine bekler, ana oyun döngüsü devam eder
     alt Bağlantı hatası veya zaman aşımı
         Servis-->>UI: onError
         UI-->>Oyuncu: Hata bildirimi
@@ -212,7 +212,7 @@ sequenceDiagram
         LLM-->>Servis: JSON yanıtı
         Servis->>Servis: Zarfı ve alanları doğrula
         alt Geçersiz yanıt
-            Servis-->>UI: onError; kapıyı açma
+            Servis-->>UI: onError, kapıyı açma
         else Geçerli yanıt
             Servis-->>UI: DialogueResponse
             UI-->>Oyuncu: Türkçe cevap
